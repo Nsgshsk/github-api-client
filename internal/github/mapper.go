@@ -75,3 +75,21 @@ func mapRepos(resp []dto.RepoResponse) ([]models.Repository, error) {
 	}
 	return repos, nil
 }
+
+func mapBaseRepo(resp dto.RepoResponse) (*models.BaseRepository, error) {
+	return &models.BaseRepository{
+		Name:       resp.FullName,
+		IsPrivate:  resp.Private,
+		URL:        resp.Url,
+		StarsCount: resp.StargazersCount,
+	}, nil
+}
+
+func mapBaseRepos(resp []dto.RepoResponse) ([]models.BaseRepository, error) {
+	repos := make([]models.BaseRepository, len(resp))
+	for i, repo := range resp {
+		repo, _ := mapBaseRepo(repo)
+		repos[i] = *repo
+	}
+	return repos, nil
+}
