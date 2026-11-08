@@ -6,13 +6,13 @@ import (
 
 const baseURL = "https://api.github.com"
 
-type GithubClient struct {
+type Client struct {
 	HTTPClient *http.Client
 	BaseURL    string
 }
 
-func NewGithubClient() *GithubClient {
-	return &GithubClient{
+func NewClient() *Client {
+	return &Client{
 		HTTPClient: http.DefaultClient,
 		BaseURL:    baseURL,
 	}

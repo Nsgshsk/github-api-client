@@ -9,7 +9,7 @@ import (
 	"github.com/Nsgshsk/github-api-client.git/internal/models"
 )
 
-func (c *GithubClient) GetUser(username string) (*models.User, error) {
+func (c *Client) GetUser(username string) (*models.User, error) {
 	url := fmt.Sprintf("%s/users/%s", c.BaseURL, username)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)

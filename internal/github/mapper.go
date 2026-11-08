@@ -45,7 +45,7 @@ func mapRepo(resp dto.RepoResponse) (*models.Repository, error) {
 		Name:            resp.FullName,
 		IsPrivate:       resp.Private,
 		Owner:           owner,
-		Url:             resp.HtmlUrl,
+		URL:             resp.HtmlUrl,
 		MirrorUrl:       resp.MirrorUrl,
 		IsFork:          resp.Fork,
 		CreatedAt:       resp.CreatedAt,

@@ -9,8 +9,8 @@ import (
 	"github.com/Nsgshsk/github-api-client.git/internal/models"
 )
 
-func (c *GithubClient) GetRepo(repoUrl string) ([]models.Repository, error) {
-	url := fmt.Sprintf("%s", repoUrl)
+func (c *Client) GetRepos(username string) ([]models.Repository, error) {
+	url := fmt.Sprintf("%s/users/%s/repos", c.BaseURL, username)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
