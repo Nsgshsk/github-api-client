@@ -2,11 +2,16 @@ package models
 
 import "time"
 
+type BaseRepository struct {
+	Name       string
+	IsPrivate  bool
+	URL        string
+	StarsCount int
+}
+
 type Repository struct {
-	Name            string
-	IsPrivate       bool
+	BaseRepository
 	Owner           BaseUser
-	Url             string
 	MirrorUrl       *string
 	IsFork          bool
 	CreatedAt       time.Time
@@ -14,7 +19,6 @@ type Repository struct {
 	PushedAt        time.Time
 	Homepage        *string
 	RepoSize        int
-	StarsCount      int
 	WatchersCount   int
 	ForksCount      int
 	IsArchived      bool
