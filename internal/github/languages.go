@@ -8,16 +8,16 @@ import (
 	"github.com/Nsgshsk/github-api-client.git/internal/models"
 )
 
-func (c *Client) GetLanguages(repo string) (*models.Languages, error) {
-	url := fmt.Sprintf("%s/repos/%s/languages", c.BaseURL, repo)
+func (c *Client) GetRepoLanguages(repo string) (*models.Languages, error) {
+	url := fmt.Sprintf("%s/repos/%s/languages", c.baseURL, repo)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	req.Header.Set("Accept", "application/vnd.github.v3+json")
-	resp, err := c.HTTPClient.Do(req)
+	req.Header.Set("Accept", "application/vnd.github+json")
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}

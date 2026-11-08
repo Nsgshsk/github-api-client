@@ -9,16 +9,16 @@ import (
 	"github.com/Nsgshsk/github-api-client.git/internal/models"
 )
 
-func (c *Client) GetRepos(username string) ([]models.Repository, error) {
-	url := fmt.Sprintf("%s/users/%s/repos", c.BaseURL, username)
+func (c *Client) GetUserRepos(username string) ([]models.Repository, error) {
+	url := fmt.Sprintf("%s/users/%s/repos", c.baseURL, username)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	req.Header.Set("Accept", "application/vnd.github.v3+json")
-	resp, err := c.HTTPClient.Do(req)
+	req.Header.Set("Accept", "application/vnd.github+json")
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}

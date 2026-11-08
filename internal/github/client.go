@@ -7,13 +7,13 @@ import (
 const baseURL = "https://api.github.com"
 
 type Client struct {
-	HTTPClient *http.Client
-	BaseURL    string
+	httpClient *http.Client
+	baseURL    string
 }
 
 func NewClient() *Client {
 	return &Client{
-		HTTPClient: http.DefaultClient,
-		BaseURL:    baseURL,
+		httpClient: http.DefaultClient,
+		baseURL:    baseURL,
 	}
 }

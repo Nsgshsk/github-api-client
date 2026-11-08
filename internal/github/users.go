@@ -10,15 +10,15 @@ import (
 )
 
 func (c *Client) GetUser(username string) (*models.User, error) {
-	url := fmt.Sprintf("%s/users/%s", c.BaseURL, username)
+	url := fmt.Sprintf("%s/users/%s", c.baseURL, username)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	req.Header.Set("Accept", "application/vnd.github.v3+json")
-	resp, err := c.HTTPClient.Do(req)
+	req.Header.Set("Accept", "application/vnd.github+json")
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
