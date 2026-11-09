@@ -1,23 +1,24 @@
 package github
 
 import (
-	"github.com/Nsgshsk/github-api-client.git/internal/github/dto"
-	"github.com/Nsgshsk/github-api-client.git/internal/models"
+	"github.com/Nsgshsk/github-api-client/internal/github/dto"
+	"github.com/Nsgshsk/github-api-client/internal/models"
 )
 
-func mapUser(resp dto.UserResponse) (*models.User, error) {
-	isPublic := false
-	if resp.UserViewType == "public" {
-		isPublic = true
-	}
+func mapUser(resp dto.UserResponse) *models.User {
 	return &models.User{
-		Username:         resp.Login,
-		Homepage:         resp.HtmlUrl,
+		BaseUser: models.BaseUser{
+			Username: resp.Login,
+			Homepage: resp.HtmlUrl,
+		},
 		Email:            resp.Email,
-		IsPublic:         isPublic,
+		IsPublic:         resp.UserViewType == "public",
 		Name:             resp.Name,
+		Company:          resp.Company,
+		Blog:             resp.Blog,
+		TwitterUsername:  resp.TwitterUsername,
 		Location:         resp.Location,
-		Hirable:          resp.Hireable,
+		Hireable:         resp.Hireable,
 		Bio:              resp.Bio,
 		PublicReposCount: resp.PublicRepos,
 		PublicGistsCount: resp.PublicGists,
@@ -25,71 +26,87 @@ func mapUser(resp dto.UserResponse) (*models.User, error) {
 		FollowingCount:   resp.Following,
 		CreatedAt:        resp.CreatedAt,
 		UpdatedAt:        resp.UpdatedAt,
-	}, nil
+	}
 }
 
-func mapRepo(resp dto.RepoResponse) (*models.Repository, error) {
+func mapRepo(resp dto.RepoResponse) *models.Repository {
 	owner := models.BaseUser{
 		Username: resp.Owner.Login,
 		Homepage: resp.Owner.HtmlUrl,
 	}
-	var license models.License
+
+	var license *models.License
 	if resp.License != nil {
-		license = models.License{
-			Name: resp.Name,
-			Url:  resp.License.Url,
+		license = &models.License{
+			Name: resp.License.Name,
+			URL:  resp.License.Url,
 		}
 	}
 
 	return &models.Repository{
-		Name:            resp.FullName,
-		IsPrivate:       resp.Private,
+		BaseRepository: models.BaseRepository{
+			Name:            resp.FullName,
+			IsPrivate:       resp.Private,
+			URL:             resp.HtmlUrl,
+			StarsCount:      resp.StargazersCount,
+			ForksCount:      resp.ForksCount,
+			PrimaryLanguage: languageName(resp.Language),
+			Description:     resp.Description,
+			UpdatedAt:       resp.UpdatedAt,
+			IsFork:          resp.Fork,
+			IsArchived:      resp.Archived,
+		},
 		Owner:           owner,
-		URL:             resp.HtmlUrl,
 		MirrorUrl:       resp.MirrorUrl,
-		IsFork:          resp.Fork,
 		CreatedAt:       resp.CreatedAt,
-		UpdatedAt:       resp.UpdatedAt,
 		PushedAt:        resp.PushedAt,
 		Homepage:        resp.Homepage,
 		RepoSize:        resp.Size,
-		StarsCount:      resp.StargazersCount,
 		WatchersCount:   resp.WatchersCount,
-		ForksCount:      resp.Forks,
-		IsArchived:      resp.Archived,
-		IsDisabled:      resp.Archived,
+		IsDisabled:      resp.Disabled,
 		OpenIssuesCount: resp.OpenIssuesCount,
-		License:         &license,
+		License:         license,
 		AllowsForking:   resp.AllowForking,
 		IsTemplate:      resp.IsTemplate,
 		Topics:          resp.Topics,
 		DefaultBranch:   resp.DefaultBranch,
-	}, nil
+	}
 }
 
-func mapRepos(resp []dto.RepoResponse) ([]models.Repository, error) {
+func languageName(language *string) string {
+	if language == nil {
+		return ""
+	}
+	return *language
+}
+
+func mapRepos(resp []dto.RepoResponse) []models.Repository {
 	repos := make([]models.Repository, len(resp))
 	for i, repo := range resp {
-		repo, _ := mapRepo(repo)
-		repos[i] = *repo
+		repos[i] = *mapRepo(repo)
 	}
-	return repos, nil
+	return repos
 }
 
-func mapBaseRepo(resp dto.RepoResponse) (*models.BaseRepository, error) {
+func mapBaseRepo(resp dto.RepoResponse) *models.BaseRepository {
 	return &models.BaseRepository{
-		Name:       resp.FullName,
-		IsPrivate:  resp.Private,
-		URL:        resp.Url,
-		StarsCount: resp.StargazersCount,
-	}, nil
+		Name:            resp.FullName,
+		IsPrivate:       resp.Private,
+		URL:             resp.HtmlUrl,
+		StarsCount:      resp.StargazersCount,
+		ForksCount:      resp.ForksCount,
+		PrimaryLanguage: languageName(resp.Language),
+		Description:     resp.Description,
+		UpdatedAt:       resp.UpdatedAt,
+		IsFork:          resp.Fork,
+		IsArchived:      resp.Archived,
+	}
 }
 
-func mapBaseRepos(resp []dto.RepoResponse) ([]models.BaseRepository, error) {
+func mapBaseRepos(resp []dto.RepoResponse) []models.BaseRepository {
 	repos := make([]models.BaseRepository, len(resp))
 	for i, repo := range resp {
-		repo, _ := mapBaseRepo(repo)
-		repos[i] = *repo
+		repos[i] = *mapBaseRepo(repo)
 	}
-	return repos, nil
+	return repos
 }

@@ -6,13 +6,17 @@ type BaseUser struct {
 	Username string
 	Homepage string
 }
+
 type User struct {
 	BaseUser
 	Email            string
 	IsPublic         bool
 	Name             string
+	Company          *string
+	Blog             string
+	TwitterUsername  string
 	Location         string
-	Hirable          bool
+	Hireable         bool
 	Bio              *string
 	PublicReposCount int
 	PublicGistsCount int

@@ -1,3 +1,3 @@
-module github.com/Nsgshsk/github-api-client.git
+module github.com/Nsgshsk/github-api-client
 
 go 1.27

@@ -2,4 +2,9 @@ package models
 
 type Languages map[string]int64
 
-type LangPercentage map[string]float32
+type LanguageShare struct {
+	Name       string
+	Percentage float64
+}
+
+type LanguageDistribution []LanguageShare
