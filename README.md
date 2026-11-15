@@ -41,12 +41,9 @@ Usage: client [flags] <usernames-file>
 Flags:
   --api-url string          override GitHub API base URL
   --auth-mode string        auth mode: auto, unauthenticated, authenticated (default "auto")
-  --cache-ttl duration      in-memory cache TTL (default 5m0s)
   --exclude-archived        exclude archived repositories
   --exclude-forks           exclude forked repositories
-  --no-cache                disable request caching
   --others-threshold float  group languages below this percentage as Others (default 5)
-  --timeout duration        overall run timeout, 0 disables (default 2m0s)
   --top int                 number of top repositories to show (default 5)
 ```
 
@@ -78,7 +75,7 @@ export GITHUB_TOKEN=ghp_...
 ./client usernames.txt
 ```
 
-Unauthenticated requests are limited to 60 requests per hour. Since the client fetches language statistics for every repository, a token is strongly recommended for more than a couple of users. Language requests and repository pages are cached in memory for the duration of the run (`--cache-ttl`, default 5 minutes; disable with `--no-cache`).
+Unauthenticated requests are limited to 60 requests per hour. Since the client fetches language statistics for every repository, a token is strongly recommended for more than a couple of users. Requests are not cached, so every run fetches fresh data from the API.
 
 ## Output
 
@@ -120,7 +117,10 @@ Language distribution
 - Languages below `--others-threshold` are summed into `Others`, always shown last.
 - The largest language is always shown even if it falls below the threshold.
 - Percentages are derived from the byte counts returned by the GitHub languages endpoint.
-- Errors for individual users are printed to stderr; the client continues with the remaining users and exits non-zero if any failed.
+- Diagnostics are written to stderr through Go's `log` package.
+- If a repository's language fetch fails, the failure is logged, that repository is excluded from the language percentages, and the rest of the report is still shown.
+- If the repository list cannot be fetched, the user's profile is still rendered with empty repository and language tables.
+- Errors for individual users are logged to stderr; the client continues with the remaining users and exits non-zero if anything failed.
 
 ## Exit codes
 
@@ -129,13 +129,3 @@ Language distribution
 | 0 | All users processed successfully |
 | 1 | File, runtime, or per-user failure |
 | 2 | Usage or authentication configuration error |
-| 130 | Interrupted |
-
-## Development
-
-```bash
-gofmt -l .
-go build ./...
-go vet ./...
-go test -race ./...
-```
